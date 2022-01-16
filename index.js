@@ -41,7 +41,7 @@ const whois = function(typename) {
 
 
 
-public.type = function(singular, /*optional*/plural, handler) {
+public.add = function(singular, /*optional*/plural, handler) {
     if(nil(handler) && fn(plural)) {
         handler = plural
         plural = undefined
@@ -91,18 +91,18 @@ public.check = function(...group) {
 
 
 
-public.type("nil",      nil)
-public.type("boolean",  bool)
-public.type("function", fn)
-public.type("object",   obj)
-public.type("array",    arr)
-public.type("number",   value   => /^\-?\d*\d\.?\d*$/.test(value) || Number(value) === 0)
-public.type("integer",  value   => /^\-?\d+$/.test(value) || Number(value) === 0)
-public.type("float",    value   => /^\-?\d+\d\.\d{2,}$/.test(value) || Number(value) === 0)
-public.type("string",   value   => typeof value === "string")
-public.type("promise",  value   => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
-public.type("buffer",   value   => Buffer.isBuffer(value))
-public.type("email",    address => {
+public.add("nil",      nil)
+public.add("boolean",  bool)
+public.add("function", fn)
+public.add("object",   obj)
+public.add("array",    arr)
+public.add("number",   value   => /^\-?\d*\d\.?\d*$/.test(value) || Number(value) === 0)
+public.add("integer",  value   => /^\-?\d+$/.test(value) || Number(value) === 0)
+public.add("float",    value   => /^\-?\d+\d\.\d{2,}$/.test(value) || Number(value) === 0)
+public.add("string",   value   => typeof value === "string")
+public.add("promise",  value   => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
+public.add("buffer",   value   => Buffer.isBuffer(value))
+public.add("email",    address => {
     const alphanumeric_set = "a-z0-9"
     const specialchars_set = "!#$%&'*+/=?^_`{|}~-"
     const validation_rule  = new RegExp(`^[${alphanumeric_set}${specialchars_set}]+(?:\.[${alphanumeric_set}${specialchars_set}]+)*@(?:[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?\.)+[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?$`, "gi") // regex found at https://regexr.com/2rhq7
