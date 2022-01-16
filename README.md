@@ -1,36 +1,6 @@
-
-```js
-// check type of "foo bar baz"
-const is_foobar = tyoecheck({"one_foobar": "foo bar baz"})
-
-// check if all three values have same type: ["hello world", 369, "foo bar baz"]
-const all_foobars = typecheck({"many_foobars": [
-    "hello world",
-    369,
-    "foo bar baz"
-]})
-
-console.log(is_foobar)
-
-assert(all_foobars, "Values are not all of type 'foobar'!")
-```
-
-***stdout:***
-```bash
-true
-Error: Assertion Error: Values are not all of type 'foobar'!
-```
-
-
-
-
-
-
-
-
 # Tiny JavaScript type-checking library
 
-Typechecking in JavaScript is combersome often times. And writing same code over and over again is a pain in the butt too. But with this tiny package, you can define your own typecheck functions once (and for all), and then use them everywhere in your project!
+Typechecking in JavaScript is combersome often times. And writing same code over and over again is a pain in the butt too. But with this tiny package, you can define your own types once (and for all), and then check them everywhere in your project!
 
 
 ## Why?
@@ -233,4 +203,12 @@ typecheck({facts: ["false, true, 0]})
 >
 > Yes, you'd need a naming convention to tell them apart! **This is why we have a **singular** name for one value and a **plural** name for many value.**
 
+
+## What else is included?
+
+You can use typecheking, for example, inside your `if` statements. You could also try `assert(condition, message)` if you want to throw an error immediately instead.
+
+```js
+
+```
 
