@@ -1,6 +1,6 @@
 {
     "private": false,
-    "version": "0.1.1",
+    "version": "0.2.0",
     "name": "jstypecheck",
     "description": "define and check your own var-types",
     "author": "geekhunger <hallo@geekhunger.de>",
@@ -15,8 +15,17 @@
         "url": "https://github.com/geekhunger/typecheck-js/issues"
     },
     "keywords": [
-        "typecheck",
-        "type"
+        "type",
+        "check",
+        "typeok",
+        "vartype",
+        "var type",
+        "js-typecheck",
+        "typecheck-js",
+        "type-check",
+        "type check",
+        "jstypecheck",
+        "typecheckjs"
     ],
     "dependencies": {
     }
