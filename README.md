@@ -206,9 +206,6 @@ typecheck({facts: ["false, true, 0]})
 
 ## What else is included?
 
-You can use typecheking, for example, inside your `if` statements. You could also try `assert(condition, message)` if you want to throw an error immediately instead.
+You can use `typecheck({typename: value})` as usual and combine it with your `if` statements. You could also try out **`assert(typecheck({typename: value}), "error message")`** if you want, which throws an error immediately, when your check fails. (Choose your enemy!)
 
-```js
-
-```
 
