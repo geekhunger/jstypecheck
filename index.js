@@ -15,7 +15,7 @@ const arr  = value => Array.isArray(value)
 
 
 public.assert = function(condition, message) {
-    if(Boolen(condition)) return true
+    if(Boolean(condition)) return true
     throw new Error(`Assertion Error: ${message}`)
 }
 
