@@ -26,7 +26,7 @@ Well, [typeok](https://github.com/kevinfiol/typeok) came actually quite close to
 ### Install this package from NPM
 
 ```bash
-npm i jstypecheck
+npm i type-approve
 ```
 
 
@@ -35,10 +35,10 @@ npm i jstypecheck
 ### Include it in your project
 
 ```js
-const t = require("jstypecheck") // include like so, then call like t.check({typename: value})
-const typecheck = require("jstypecheck").check // or like so and call typecheck({})
-const {add, check, assert} = require("jstypecheck") // or like so...
-const {add: typeadd, check: typecheck, assert} = require("jstypecheck") // or like so (and rename exported functions)
+const t = require("type-approve") // include like so, then call like t.check({typename: value})
+const typecheck = require("type-approve").check // or like so and call typecheck({})
+const {add, check, assert} = require("type-approve") // or like so...
+const {add: typeadd, check: typecheck, assert} = require("type-approve") // or like so (and rename exported functions)
 ```
 
 
@@ -47,7 +47,7 @@ const {add: typeadd, check: typecheck, assert} = require("jstypecheck") // or li
 ### Check out available types
 
 ```js
-const types = require("jstypecheck").add
+const types = require("type-approve").add
 
 console.log(types()) // see available typechecks (build-in + your own)
 console.log(types("promise")) // get the validation function of type 'promise'
@@ -95,7 +95,7 @@ Good. After you've installed the package and know how to include it into your pr
 
 ```js
 // include packackage
-const jstypecheck = require("jstypecheck")
+const jstypecheck = require("type-approve")
 const typeadd = jstypecheck.add
 const typecheck = jstypecheck.check
 ```
@@ -137,7 +137,7 @@ if(typecheck({foobar: "Hello World"})
 
 ```
 
-*Have you noticed* how we compared each of the typechecks with the `&&` (logical `and` operator)? Well, this is actually build into `jstypecheck`!
+*Have you noticed* how we compared each of the typechecks with the `&&` (logical `and` operator)? Well, this is actually build into `type-approve`!
 
 ```js
 // Solution #2 is typechecking all value at once:
