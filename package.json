@@ -1,18 +1,18 @@
 {
     "private": false,
-    "version": "0.2.0",
-    "name": "jstypecheck",
+    "version": "0.2.2",
+    "name": "type-approve",
     "description": "define and check your own var-types",
     "author": "geekhunger <hallo@geekhunger.de>",
     "license": "MIT",
     "main": "index.js",
-    "homepage": "https://github.com/geekhunger/typecheck-js#readme",
+    "homepage": "https://github.com/geekhunger/type-approve#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/geekhunger/typecheck-js.git"
+        "url": "git+https://github.com/geekhunger/type-approve.git"
     },
     "bugs": {
-        "url": "https://github.com/geekhunger/typecheck-js/issues"
+        "url": "https://github.com/geekhunger/type-approve/issues"
     },
     "keywords": [
         "type",
