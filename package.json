@@ -6,13 +6,13 @@
     "author": "geekhunger <hallo@geekhunger.de>",
     "license": "MIT",
     "main": "index.js",
-    "homepage": "https://github.com/geekhunger/jstypecheck#readme",
+    "homepage": "https://github.com/geekhunger/typecheck-js#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/geekhunger/jstypecheck.git"
+        "url": "git+https://github.com/geekhunger/typecheck-js.git"
     },
     "bugs": {
-        "url": "https://github.com/geekhunger/jstypecheck/issues"
+        "url": "https://github.com/geekhunger/typecheck-js/issues"
     },
     "keywords": [
         "typecheck",
