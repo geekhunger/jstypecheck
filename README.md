@@ -236,13 +236,13 @@ typecheck({
 
 - <h3 id="or-operator">logical <code>||</code> comparison</h3>
 
-When you want to verify that **some** (either one) of the checks evaluates to `true`, then use an array of objects. The compiled results of every item in the array (boolean) will be compared by an "or" condition.
+When you want to verify that **some** (either one) of the checks evaluates to `true`, then just pass your objects as comma separated values to the function call. The compiled results of every item in the array (boolean) will be compared by an "or" condition.
 
 ```js
-const result = typecheck([
+const result = typecheck(
     {number: 10}, // true
     {float: 10} // false
-])
+)
 console.log(result) // (true || false) === true
 ```
 
@@ -256,16 +256,16 @@ This is where nesting of typechecks come in handy!
 typecheck({
     strings: "sam",
     array: ["list", "of", "things"],
-    typecheck([ {number: 10}, {float: 10} ])
+    typecheck({number: 10}, {float: 10})
 })
 ```
 
 Behind the scenes, inner typechecks get compiled first! In this example, the `typecheck([...])` contains an array, which means that every entry will be related to another by an 'or' comparision (equally to `[].some()`). The result in this example would be boolean `true`:
 
 ```txt
-              [    t r u e    | |   f a l s e  ]   ===   t r u e
-                      :        :       :
-    typecheck([ {number: 10},  :  {float: 10}  ])
+                  t r u e    | |   f a l s e     ===   t r u e
+                    :         :        :
+    typecheck( {number: 10},  :  {float: 10}  )
 ```
 
 Next, the remaining unnested conditions get evaluated as well. They return booleans too. In this particular example the coditions reside in an object (not an array), so they get compared by an 'and'! In this example, each key would now result in a boolean `true`:
@@ -289,9 +289,15 @@ The final return value from this example would be a boolean `true`, as we see!
 You can use `typecheck({typename: value})` as usual and combine it with your `if` statements.
 
 ```js
-
+if(!typecheck(nil: "hello")) {
+    console.info("Great, 'hello' is not a falsy type!")
+}
 ```
 
 You could also try out **`assert(typecheck({typename: value}), "error message")`** if you want, which throws an error immediately, when your checks fail. Choose your enemy!
+
+```js
+assert(typecheck(nil: '')), "That's weird! An empty text is NOT really a falsy type... Only undefined, null and NaN are!")
+```
 
 
