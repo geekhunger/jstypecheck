@@ -100,6 +100,7 @@ public.add("number",   value   => /^\-?\d*\d\.?\d*$/.test(value) || Number(value
 public.add("integer",  value   => /^\-?\d+$/.test(value) || Number(value) === 0)
 public.add("float",    value   => /^\-?\d+\d\.\d{2,}$/.test(value) || Number(value) === 0)
 public.add("string",   value   => typeof value === "string")
+public.add("function", value   => typeof value === "function")
 public.add("promise",  value   => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
 public.add("buffer",   value   => Buffer.isBuffer(value))
 public.add("email",    address => {
