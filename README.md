@@ -69,6 +69,7 @@ console.log(isstring === true) // true
     'integer|integers': [Function (anonymous)],
     'float|floats': [Function (anonymous)],
     'string|strings': [Function (anonymous)],
+    'function|functions': [Function (anonymous)],
     'promise|promises': [Function (anonymous)],
     'buffer|buffers': [Function (anonymous)],
     'email|emails': [Function (anonymous)]
