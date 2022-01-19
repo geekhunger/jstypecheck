@@ -1,6 +1,6 @@
 {
     "private": false,
-    "version": "0.2.7",
+    "version": "0.2.8",
     "name": "type-approve",
     "description": "define and check your own var-types",
     "author": "geekhunger <hallo@geekhunger.de>",

@@ -72,6 +72,7 @@ console.log(isstring === true) // true
     'function|functions': [Function (anonymous)],
     'promise|promises': [Function (anonymous)],
     'buffer|buffers': [Function (anonymous)],
+    'expression|expressions': [Function (anonymous)],
     'email|emails': [Function (anonymous)]
 }
 [Function (anonymous)]
