@@ -211,18 +211,19 @@ typecheck({facts: ["false, true, 0]})
 > Because it allows checking multiple values for the same type within `typecheck({})` the same call!
 >
 > Consider this example: `typecheck({string: "hello", string: true})`
-> Here, the result will be `false`. But not because of `{string: "hello"}` being `true` and `string: true}` being `false` and as a result `false && false` being `false`.
+> Here, the result will be `false`. But not because of `{string: "hello"}` being `true` and `string: true}` being `false` and as a result `false && false` being `false`!<br>
+> It evaluates to `false`, because of the second key assignment `string: true`, overrides the  first one `string: "hello"! Therefore, the first entry in the Object is completely ignored and not checked at all! So, the result is `false` because `string: true` evaluates to `false`. - This is how Objects work! You can only have one unique key in your Object and if you define it twice then the first one becomes absolete.
 >
-> It evaluates to false, because of the second key assignment `string: true`, overrides the  first one, with value `"hello"`! Therefore, the first entry in the Object is completely ignored and not checked at all! This is how Objects work! You can only have one unique key in your Object and if you define it twice then the first one becomes absolete.
+> The only solution is to wrap the values into an array, like: `typecheck({string: ["hello", true]})`. But then again, how do you tell the difference between `typecheck({array: [1,2,3]})` and `typecheck({array: ["some value", true, [1,2,3]]})`? How would you know how to handle both cases?
 >
-> The only solution is to assign an array to it, like `typecheck({string: ["hello", true]})`. But then again, how do you handle `typecheck({array: [1,2,3]})` versus `typecheck({array: ["some value", true, [1,2,3]]})`?
->
-> Yes, you'd need a naming convention to tell them apart! **This is why we have a **singular** name for one value and a **plural** name for many value.**
+> Yes, exactly! You'd need a naming convention to tell them apart!
+> 
+> **This is why we have a **singular** name for one value and a **plural** name for many value.**
 
 
 ## What else is included?
 
-- <h3 id="and-operator">logical <code>&&`</code> chaining</h3>
+- <h3 id="and-operator">logical <code>&&</code> chaining</h3>
 
 When you want to verify that **all** of the checks evaluate to `true`, then use an object! Every `key: value` pair will be checked and all of the values will be compared with by an "and" condition.
 
@@ -287,16 +288,13 @@ The final return value from this example would be a boolean `true`, as we see!
 
 - <h3 id="assert"><code>assert(condition, message)</code></h3>
 
-You can use `typecheck({typename: value})` as usual and combine it with your `if` statements.
+`assert` is just another way of saying: `if(!condition) throw new Error("message"))`. You can use `typecheck({typename: value})` as usual and combine it with your `if` statements. Or, you combine it with `assert(typecheck({typename: value}), "Wrong type!")`, which throws an error immediately, when your type-checking fails.
 
 ```js
 if(!typecheck(nil: "hello")) {
     console.info("Great, 'hello' is not a falsy type!")
 }
 ```
-
-You could also try out **`assert(typecheck({typename: value}), "error message")`** if you want, which throws an error immediately, when your checks fail. Choose your enemy!
-
 ```js
 assert(typecheck(nil: '')), "That's weird! An empty text is NOT really a falsy type... Only undefined, null and NaN are!")
 ```
