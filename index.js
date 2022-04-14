@@ -19,17 +19,20 @@ public.assert = function(condition, message) {
 }
 
 
-
 const whois = function(typename) {
-    const findings = Object.entries(TYPE)
-        .filter(([key, value]) => new RegExp(key).test(typename)) // search for singular or plural!
-        .map(elem => {
-            const nc = elem[0].split("|") // nummerus clausus
+    const findings = Object
+        .entries(TYPE)
+        .filter(([id, fn]) => {
+            return id.split("|").includes(typename) // search for singular or plural!
+        })
+        .map(([id, fn]) => {
+            const [singular, plural] = id.split("|")
             return {
-                name: nc[nc.indexOf(typename)], // did we find by singular or by plural? (name will tell you!)
-                singular: nc[0],
-                plural: nc[1],
-                handler: elem[1]
+                singular: singular,
+                plural: plural,
+                handler: fn,
+                filter_by: typename, // query string which was used to find this typecheck resolver
+                found_by: typename === singular ? "singular" : (typename === plural ? "plural" : undefined) // name of the identifier by which we found this resolver (by its singular or plural name)?
             }
         })
     switch(findings.length) {
@@ -46,16 +49,16 @@ public.add = function(singular, /*optional*/plural, handler) {
         handler = plural
         plural = undefined
     }
-    if(nil(singular) && nil(plural) && nil(handler)) {
+    if(nil(singular) && nil(plural) && nil(handler)) { // add() returns all available type definitions
         return TYPE
     }
-    if(nil(plural) && nil(handler)) {
+    if(nil(plural) && nil(handler)) { // add("singular_name") finds handler by name and returns it
         try {return whois(singular).handler}
         catch(_) {return undefined}
     }
     public.assert(str(singular) && fn(handler), "Malformed typecheck call!")
-    const name = `${singular}|${plural ?? singular + "s"}` // funny coincidence: the name is actually a valid RegExp expression
-    TYPE[name] = handler
+    const identifier = `${singular}|${plural ?? singular + "s"}` // funny coincidence: the name is actually a valid RegExp expression
+    TYPE[identifier] = handler
     return handler
 }
 
@@ -69,15 +72,16 @@ public.check = function(...group) {
         } else if(obj(set)) {
             let test = []
             for(const [typename, input] of Object.entries(set)) {
-                const validate = whois(typename)
-                switch(validate.name) {
-                    case validate.singular: {
-                        test.push(validate.handler(input))
+                const resolver = whois(typename)
+                const identifier = resolver[resolver.found_by]
+                switch(identifier) {
+                    case resolver.singular: {
+                        test.push(resolver.handler(input))
                         break
                     }
-                    case validate.plural: {
-                        public.assert(arr(input), `Malformed value for '${validate.name}' typecheck!`)
-                        for(const value of input) test.push(validate.handler(value))
+                    case resolver.plural: {
+                        public.assert(arr(input), `Malformed value for '${identifier}' typecheck!`)
+                        for(const value of input) test.push(resolver.handler(value))
                     }
                 }
             }
