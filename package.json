@@ -1,6 +1,6 @@
 {
     "private": false,
-    "version": "0.3.0",
+    "version": "1.0.0",
     "name": "type-approve",
     "description": "define and check your own var-types",
     "author": "geekhunger <hallo@geekhunger.de>",
@@ -25,7 +25,8 @@
         "type-check",
         "type check",
         "jstypecheck",
-        "typecheckjs"
+        "typecheckjs",
+        "type safty"
     ],
     "dependencies": {
     }

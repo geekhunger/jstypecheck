@@ -1,6 +1,6 @@
 let public = module.exports = {}
 let TYPE = Object.create(null)
-
+const {Readable, Writable} = require("stream")
 
 
 // private shortcuts (also used publically, see definitions at the bottom of this file!)
@@ -10,7 +10,6 @@ const str  = value => typeof value === "string" && value.length > 0
 const fn   = value => typeof value === "function"
 const obj  = value => typeof value === "object" && !Array.isArray(value) && value !== null
 const arr  = value => Array.isArray(value)
-
 
 
 public.assert = function(condition, message) {
@@ -43,7 +42,6 @@ const whois = function(typename) {
 }
 
 
-
 public.add = function(singular, /*optional*/plural, handler) {
     if(nil(handler) && fn(plural)) {
         handler = plural
@@ -63,8 +61,7 @@ public.add = function(singular, /*optional*/plural, handler) {
 }
 
 
-
-public.check = function(...group) {
+public.check = public.type = function(...group) {
     let result = []
     for(const set of group) {
         if(bool(set)) {
@@ -94,7 +91,6 @@ public.check = function(...group) {
 }
 
 
-
 public.add("nil", nil)
 public.add("boolean", bool)
 public.add("function", fn)
@@ -107,10 +103,29 @@ public.add("string", value => typeof value === "string")
 public.add("function", value => typeof value === "function")
 public.add("promise", value => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
 public.add("buffer", value => Buffer.isBuffer(value))
+public.add("stream", value => value instanceof Readable || value instanceof Writable)
 public.add("expression", value => /regexp/i.test(Object.prototype.toString.call(value)))
+
 public.add("email", address => {
     const alphanumeric_set = "a-z0-9"
     const specialchars_set = "!#$%&'*+/=?^_`{|}~-"
     const validation_rule  = new RegExp(`^[${alphanumeric_set}${specialchars_set}]+(?:\.[${alphanumeric_set}${specialchars_set}]+)*@(?:[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?\.)+[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?$`, "gi") // regex found at https://regexr.com/2rhq7
     return typeof address === "string" && address.match(validation_rule) !== null
+})
+
+public.add("json", value => {
+    try {
+        /*
+            Handle non-exception-throwing cases.
+            Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking.
+            However, JSON.parse(null) returns null, and typeof null === "object".
+            So, we must check for that, too. Thankfully, null is falsey.
+        */
+        var result = JSON.parse(value)
+        if(result && typeof result === "object") {
+            return true
+        }
+    } catch(_) {
+        return false
+    }
 })
