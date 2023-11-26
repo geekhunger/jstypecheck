@@ -34,11 +34,20 @@ npm i type-approve
 
 ### Include it in your project
 
+In commonJs:
+
 ```js
 const t = require("type-approve") // include like so, then call like t.check({typename: value})
 const typecheck = require("type-approve").check // or like so and call typecheck({})
 const {add, check, assert} = require("type-approve") // or like so...
 const {add: typeadd, check: typecheck, assert} = require("type-approve") // or like so (and rename exported functions)
+```
+
+In ESM:
+
+```js
+import Type form "type-approve"
+const {assert, type, add} = Type // 'type' and 'check' exports refer to the same thing
 ```
 
 
@@ -62,18 +71,22 @@ console.log(isstring === true) // true
 {
     'nil|nils': [Function: nil],
     'boolean|booleans': [Function: bool],
-    'function|functions': [Function: fn],
-    'object|objects': [Function: obj],
-    'array|arrays': [Function: arr],
     'number|numbers': [Function (anonymous)],
     'integer|integers': [Function (anonymous)],
     'float|floats': [Function (anonymous)],
     'string|strings': [Function (anonymous)],
-    'function|functions': [Function (anonymous)],
-    'promise|promises': [Function (anonymous)],
-    'buffer|buffers': [Function (anonymous)],
     'expression|expressions': [Function (anonymous)],
-    'email|emails': [Function (anonymous)]
+    'email|emails': [Function (anonymous)],
+    'filepath|filepaths': [Function (anonymous)],
+    'folderpath|folderpaths': [Function (anonymous)],
+    'httpaddress|httpaddresses': [Function (anonymous)],
+    'array|arrays': [Function: arr],
+    'object|objects': [Function: obj],
+    'json|jsons': [Function (anonymous)],
+    'buffer|buffers': [Function (anonymous)],
+    'stream|streams': [Function (anonymous)],
+    'function|functions': [Function: fn],
+    'promise|promises': [Function (anonymous)],
 }
 [Function (anonymous)]
 true

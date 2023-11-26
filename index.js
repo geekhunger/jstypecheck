@@ -93,17 +93,12 @@ public.check = public.type = function(...group) {
 
 public.add("nil", nil)
 public.add("boolean", bool)
-public.add("function", fn)
-public.add("object", obj)
-public.add("array", arr)
+
 public.add("number", value => /^\-?\d*\d\.?\d*$/.test(value) || Number(value) === 0)
 public.add("integer", value => /^\-?\d+$/.test(value) || Number(value) === 0)
 public.add("float", value => /^\-?\d+\d\.\d{2,}$/.test(value) || Number(value) === 0)
+
 public.add("string", value => typeof value === "string")
-public.add("function", value => typeof value === "function")
-public.add("promise", value => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
-public.add("buffer", value => Buffer.isBuffer(value))
-public.add("stream", value => value instanceof Readable || value instanceof Writable)
 public.add("expression", value => /regexp/i.test(Object.prototype.toString.call(value)))
 
 public.add("email", address => {
@@ -112,6 +107,13 @@ public.add("email", address => {
     const validation_rule  = new RegExp(`^[${alphanumeric_set}${specialchars_set}]+(?:\.[${alphanumeric_set}${specialchars_set}]+)*@(?:[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?\.)+[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?$`, "gi") // regex found at https://regexr.com/2rhq7
     return typeof address === "string" && address.match(validation_rule) !== null
 })
+
+public.add("filepath", path => typeof path === "string" && /\.[\.\p{Ll}\p{Lm}\p{Nd}]+/ui.test(path))
+public.add("folderpath", path => typeof path === "string" && /[\p{Ll}\p{Lm}\p{Nd}]+[\\\/]$/ui.test(path)) // including slash-trailer
+public.add("httpaddress", "httpaddresses", uri => typeof uri === "string" && /^https?:/i.test(path))
+
+public.add("array", arr)
+public.add("object", obj)
 
 public.add("json", value => {
     try {
@@ -129,3 +131,9 @@ public.add("json", value => {
         return false
     }
 })
+
+public.add("buffer", value => Buffer.isBuffer(value))
+public.add("stream", value => value instanceof Readable || value instanceof Writable)
+
+public.add("function", fn)
+public.add("promise", value => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
