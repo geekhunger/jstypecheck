@@ -2,6 +2,8 @@
 
 Typechecking in JavaScript is combersome often times. And writing same code over and over again is a pain in the butt too. But with this tiny package, you can define your own types once (and for all), and then check them everywhere in your project!
 
+> **IMPORTANT:** Version >= 3.0.0 introduces breaking changes (is now an ESM module).
+
 
 ## Why?
 
@@ -31,10 +33,9 @@ npm i type-approve
 
 
 
-
 ### Include it in your project
 
-In commonJs:
+In CommonJS (before v3.0.0):
 
 ```js
 const t = require("type-approve") // include like so, then call like t.check({typename: value})
@@ -43,27 +44,28 @@ const {add, check, assert} = require("type-approve") // or like so...
 const {add: typeadd, check: typecheck, assert} = require("type-approve") // or like so (and rename exported functions)
 ```
 
-In ESM:
+In ESM (since v3.0.0):
 
 ```js
-import Type form "type-approve"
-const {assert, type, add} = Type // 'type' and 'check' exports refer to the same thing
+import assert from "type-approve" // use the default export
+import {assert, type, add} from "type-approve" // 'type' and 'check' exports refer to the same thing
 ```
-
 
 
 
 <h3 id="available-types">Check out available types</h3>
 
 ```js
-const types = require("type-approve").add
+import {validate, type} from "type-approve"
 
-console.log(types()) // see available typechecks (build-in + your own)
-console.log(types("promise")) // get the validation function of type 'promise'
+const getAllTypeDefinitions = () => validate()
+const getValidationHandler = singular_name => validate(singular_name)
 
-// you can run the returned function with an argument too, if you want...
-const isstring = types("string", "that sould resolve to true") // true
-console.log(isstring === true) // true
+console.log(getAllTypeDefinitions()) // see available typechecks (build-in ones + your own definitions)
+console.log(getValidationHandler("promise")) // get the validation function of type 'promise'
+console.log(["one", 2].every(getValidationHandler("string"))) // as synonym for: `["one", 2].every(item => type({string: item}))`
+
+console.log(validate()("string", "that sould resolve to true")) // you can also run the returned function with an argument too, if you want...
 ```
 
 ***stdout:***
@@ -92,10 +94,12 @@ console.log(isstring === true) // true
 true
 ```
 
+> You can see the [build-in validator definitions](https://github.com/geekhunger/type-approve/blob/e73c3d5301f2c6ace5e92f62bb95b569a6e6dac5/index.js#L93) at GitHub.
+
 If you try to access an undefined typecheck, then the return value would be `undefined` (obviously), instead of a validation function. For example:
 
 ```js
-console.log(typecheck({foobar: "hello world"}))
+console.log(type({foobar: "hello world"})) // type 'foobar' is not a build-in type and it was not yet defined...
 ```
 ***stdout:*** `Error: Assertion Error: Missing typecheck handler for type 'foobar'!`
 
@@ -110,7 +114,7 @@ Good. After you've installed the package and know how to include it into your pr
 
 ```js
 // include packackage
-const jstypecheck = require("type-approve")
+import jstypecheck from "type-approve"
 const typeadd = jstypecheck.add
 const typecheck = jstypecheck.check
 ```
@@ -238,7 +242,7 @@ typecheck({facts: ["false, true, 0]})
 
 - <h3 id="and-operator">logical <code>&&</code> chaining</h3>
 
-When you want to verify that **all** of the checks evaluate to `true`, then use an object! Every `key: value` pair will be checked and all of the values will be compared with by an "and" condition.
+When you want to verify that **all** of the checks evaluate to `true`, then use one single object! Every `key: value` pair will be checked and all of the values will be compared with by an "and" condition.
 
 ```js
 typecheck({
@@ -251,7 +255,7 @@ typecheck({
 
 - <h3 id="or-operator">logical <code>||</code> comparison</h3>
 
-When you want to verify that **some** (either one) of the checks evaluates to `true`, then just pass your objects as comma separated values to the function call. The compiled results of every item in the array (boolean) will be compared by an "or" condition.
+When you want to verify that **some** (either one) of the checks evaluates to `true`, then pass multiple objects to the function call, separated by a comma. The compiled results of every item in the array (boolean) will be compared by an "or" condition.
 
 ```js
 const result = typecheck(

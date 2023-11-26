@@ -1,19 +1,20 @@
-let public = module.exports = {}
-let TYPE = Object.create(null)
-const {Readable, Writable} = require("stream")
+import {Readable, Writable} from "stream"
 
+let TYPE = Object.create(null)
 
 // private shortcuts (also used publically, see definitions at the bottom of this file!)
-const nil  = value => value === undefined || value === null || value === NaN
+const nil = value => value === undefined || value === null || value === NaN
 const bool = value => (typeof value === "boolean" || typeof value === "string") && /^(true|false)$/i.test(value.toString().trim())
-const str  = value => typeof value === "string" && value.length > 0
-const fn   = value => typeof value === "function"
-const obj  = value => typeof value === "object" && !Array.isArray(value) && value !== null
-const arr  = value => Array.isArray(value)
+const str = value => typeof value === "string" && value.length > 0
+const fn = value => typeof value === "function"
+const obj = value => typeof value === "object" && !Array.isArray(value) && value !== null
+const arr = value => Array.isArray(value)
 
 
-public.assert = function(condition, message) {
-    if(Boolean(condition)) return true
+export const assert = function(condition, message) {
+    if(Boolean(condition)) {
+        return true
+    }
     throw new Error(`Assertion Error: ${message}`)
 }
 
@@ -35,14 +36,14 @@ const whois = function(typename) {
             }
         })
     switch(findings.length) {
-        case 0: public.assert(false, `Missing typecheck handler for type '${typename}'!`)
+        case 0: assert(false, `Missing typecheck handler for type '${typename}'!`)
         case 1: return findings[0]
-        default: public.assert(false, `Too many typecheck handlers (${findings.length}) of same type: ${JSON.stringify(findings, null, 4)}`)
+        default: assert(false, `Too many typecheck handlers (${findings.length}) of same type: ${JSON.stringify(findings, null, 4)}`)
     }
 }
 
 
-public.add = function(singular, /*optional*/plural, handler) {
+export const add = function(singular, /*optional*/plural, handler) {
     if(nil(handler) && fn(plural)) {
         handler = plural
         plural = undefined
@@ -50,18 +51,24 @@ public.add = function(singular, /*optional*/plural, handler) {
     if(nil(singular) && nil(plural) && nil(handler)) { // add() returns all available type definitions
         return TYPE
     }
-    if(nil(plural) && nil(handler)) { // add("singular_name") finds handler by name and returns it
-        try {return whois(singular).handler}
-        catch(_) {return undefined}
+    if(nil(plural) && nil(handler)) { // add("singular_name") finds handler by name and returns it, useful for valiadations on arrays, eg. `array.every(add('string'))`
+        try {
+            return whois(singular).handler
+        } catch(_) {
+            return undefined
+        }
     }
-    public.assert(str(singular) && fn(handler), "Malformed typecheck call!")
+    assert(str(singular) && fn(handler), "Malformed typecheck call!")
     const identifier = `${singular}|${plural ?? singular + "s"}` // funny coincidence: the name is actually a valid RegExp expression
     TYPE[identifier] = handler
     return handler
 }
 
 
-public.check = public.type = function(...group) {
+export const validate = singular_type_id => add(singular_type_id) // shortcut for special return functionality of add()
+
+
+export const check = function(...group) {
     let result = []
     for(const set of group) {
         if(bool(set)) {
@@ -77,45 +84,57 @@ public.check = public.type = function(...group) {
                         break
                     }
                     case resolver.plural: {
-                        public.assert(arr(input), `Malformed value for '${identifier}' typecheck!`)
+                        assert(arr(input), `Malformed value for '${identifier}' typecheck!`)
                         for(const value of input) test.push(resolver.handler(value))
                     }
                 }
             }
             result.push(test.every(Boolean))
         } else {
-            public.assert(false, `Unexpected value in typecheck call: ${JSON.stringify(set)}`)
+            assert(false, `Unexpected value in typecheck call: ${JSON.stringify(set)}`)
         }
     }
     return result.some(Boolean)
 }
 
 
-public.add("nil", nil)
-public.add("boolean", bool)
+export const type = check // alias
 
-public.add("number", value => /^\-?\d*\d\.?\d*$/.test(value) || Number(value) === 0)
-public.add("integer", value => /^\-?\d+$/.test(value) || Number(value) === 0)
-public.add("float", value => /^\-?\d+\d\.\d{2,}$/.test(value) || Number(value) === 0)
 
-public.add("string", value => typeof value === "string")
-public.add("expression", value => /regexp/i.test(Object.prototype.toString.call(value)))
+export default {
+    assert,
+    add,
+    check, // alias to 'type'
+    type, // alias to 'check'
+    validate // alias to 'add("type")'
+}
 
-public.add("email", address => {
+
+add("nil", nil)
+add("boolean", bool)
+
+add("number", value => /^\-?\d*\d\.?\d*$/.test(value) || Number(value) === 0)
+add("integer", value => /^\-?\d+$/.test(value) || Number(value) === 0)
+add("float", value => /^\-?\d+\d\.\d{2,}$/.test(value) || Number(value) === 0)
+
+add("string", value => typeof value === "string")
+add("expression", value => /regexp/i.test(Object.prototype.toString.call(value)))
+
+add("email", address => {
     const alphanumeric_set = "a-z0-9"
     const specialchars_set = "!#$%&'*+/=?^_`{|}~-"
     const validation_rule  = new RegExp(`^[${alphanumeric_set}${specialchars_set}]+(?:\.[${alphanumeric_set}${specialchars_set}]+)*@(?:[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?\.)+[${alphanumeric_set}](?:[${alphanumeric_set}-]*[${alphanumeric_set}])?$`, "gi") // regex found at https://regexr.com/2rhq7
     return typeof address === "string" && address.match(validation_rule) !== null
 })
 
-public.add("filepath", path => typeof path === "string" && /\.[\.\p{Ll}\p{Lm}\p{Nd}]+/ui.test(path))
-public.add("folderpath", path => typeof path === "string" && /[\p{Ll}\p{Lm}\p{Nd}]+[\\\/]$/ui.test(path)) // including slash-trailer
-public.add("httpaddress", "httpaddresses", uri => typeof uri === "string" && /^https?:/i.test(path))
+add("filepath", path => typeof path === "string" && /\.[\.\p{Ll}\p{Lm}\p{Nd}]+/ui.test(path))
+add("folderpath", path => typeof path === "string" && /[\p{Ll}\p{Lm}\p{Nd}]+[\\\/]$/ui.test(path)) // including slash-trailer
+add("httpaddress", "httpaddresses", uri => typeof uri === "string" && /^https?:/i.test(path))
 
-public.add("array", arr)
-public.add("object", obj)
+add("array", arr)
+add("object", obj)
 
-public.add("json", value => {
+add("json", value => {
     try {
         /*
             Handle non-exception-throwing cases.
@@ -132,8 +151,8 @@ public.add("json", value => {
     }
 })
 
-public.add("buffer", value => Buffer.isBuffer(value))
-public.add("stream", value => value instanceof Readable || value instanceof Writable)
+add("buffer", value => Buffer.isBuffer(value))
+add("stream", value => value instanceof Readable || value instanceof Writable)
 
-public.add("function", fn)
-public.add("promise", value => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
+add("function", fn)
+add("promise", value => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
