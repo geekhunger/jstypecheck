@@ -68,7 +68,7 @@ export const add = function(singular, /*optional*/plural, handler) {
 export const validate = singular_type_id => add(singular_type_id) // shortcut for special return functionality of add()
 
 
-export const check = function(...group) {
+export const type = function(...group) {
     let result = []
     for(const set of group) {
         if(bool(set)) {
@@ -100,15 +100,24 @@ export const check = function(...group) {
 }
 
 
-export const type = check // alias
+export const check = function(value) {
+    const types = Object
+        .keys(add())
+        .map(id => id.split("|")[0])
+        .filter(name => type({[name]: value}))
+    if(types.length < 1) {
+        types.push(typeof value)
+    }
+    return types//.sort()
+}
 
 
 export default {
     assert,
     add,
-    check, // alias to 'type'
-    type, // alias to 'check'
-    validate // alias to 'add("type")'
+    type,
+    check,
+    validate // an alias to 'add("type")'
 }
 
 
