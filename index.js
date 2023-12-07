@@ -129,7 +129,7 @@ add("email", address => {
 
 add("filepath", path => typeof path === "string" && /\.[\.\p{Ll}\p{Lm}\p{Nd}]+/ui.test(path))
 add("folderpath", path => typeof path === "string" && /[\p{Ll}\p{Lm}\p{Nd}]+[\\\/]$/ui.test(path)) // including slash-trailer
-add("httpaddress", "httpaddresses", uri => typeof uri === "string" && /^https?:/i.test(path))
+add("httpaddress", "httpaddresses", uri => typeof uri === "string" && /^https?:/i.test(uri))
 
 add("array", arr)
 add("object", obj)
