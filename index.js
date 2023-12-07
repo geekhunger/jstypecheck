@@ -43,7 +43,7 @@ const whois = function(typename) {
 }
 
 
-export const add = function(singular, /*optional*/plural, handler) {
+export const add = function(singular, /*optional*/plural, handler) { // TODO add an override=false arg, assert atherwise
     if(nil(handler) && fn(plural)) {
         handler = plural
         plural = undefined
