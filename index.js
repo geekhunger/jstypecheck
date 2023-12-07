@@ -115,7 +115,7 @@ export default {
 add("nil", nil)
 add("boolean", bool)
 
-add("number", value => /^\-?\d*\d\.?\d*$/.test(value) || Number(value) === 0)
+add("number", value => /^\-?\d*\d\.?\d*$/.test(value) || /\-?infinity/i.test(value) || Number(value) === 0)
 add("integer", value => /^\-?\d+$/.test(value) || Number(value) === 0)
 add("float", value => /^\-?\d+\d\.\d{2,}$/.test(value) || Number(value) === 0)
 

@@ -1,7 +1,7 @@
 {
     "private": false,
     "type": "module",
-    "version": "3.2.1",
+    "version": "3.3.0",
     "name": "type-approve",
     "description": "Create and validate your own var types",
     "author": "geekhunger <hello@geekhunger.com>",
