@@ -85,7 +85,9 @@ export const check = function(...group) {
                     }
                     case resolver.plural: {
                         assert(arr(input), `Malformed value for '${identifier}' typecheck!`)
-                        for(const value of input) test.push(resolver.handler(value))
+                        for(const value of input) {
+                            test.push(resolver.handler(value))
+                        }
                     }
                 }
             }
