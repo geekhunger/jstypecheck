@@ -1,5 +1,3 @@
-import {Readable, Writable} from "stream"
-
 let TYPE = Object.create(null)
 
 // private shortcuts (also used publically, see definitions at the bottom of this file!)
@@ -163,7 +161,14 @@ add("json", value => {
 })
 
 add("buffer", value => Buffer.isBuffer(value))
-add("stream", value => value instanceof Readable || value instanceof Writable)
+add("stream", value => (
+    obj(value) &&
+    typeof value.pipe === "function" &&
+    ((typeof value._read === "function" &&
+    typeof value._readableState === "object") ||
+    (typeof value._write === "function" &&
+    typeof value._writableState === "object"))
+))
 
 add("function", fn)
 add("promise", value => !Array.isArray(value) && (typeof value === "object" || typeof value === "function") && typeof value.then === "function")
